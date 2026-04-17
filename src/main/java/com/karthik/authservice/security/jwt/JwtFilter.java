@@ -1,5 +1,7 @@
 package com.karthik.authservice.security.jwt;
 
+import com.karthik.authservice.security.user.CustomUserDetails;
+import com.karthik.authservice.security.user.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +21,7 @@ import java.util.List;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -34,15 +37,16 @@ public class JwtFilter extends OncePerRequestFilter {
             if (jwtProvider.validateToken(token)) {
                 String userId = jwtProvider.getUserIdFromToken(token);
 
-                // 🔥 Create authentication object
+                CustomUserDetails userDetails =
+                        (CustomUserDetails) userDetailsService.loadUserById(userId);
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
-                                userId,
+                                userDetails,
                                 null,
-                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                                userDetails.getAuthorities()
                         );
 
-                // 🔥 Set into SecurityContext
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
