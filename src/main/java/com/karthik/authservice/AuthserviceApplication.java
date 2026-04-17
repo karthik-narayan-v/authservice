@@ -3,7 +3,7 @@ package com.karthik.authservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.karthik.authservice")
 public class AuthserviceApplication {
 
 	public static void main(String[] args) {
