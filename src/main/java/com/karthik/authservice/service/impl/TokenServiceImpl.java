@@ -42,4 +42,12 @@ public class TokenServiceImpl implements TokenService {
 
         return refreshToken.getUser().getId();
     }
+
+    @Override
+    public void deleteRefreshToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Token not found"));
+
+        refreshTokenRepository.delete(refreshToken);
+    }
 }

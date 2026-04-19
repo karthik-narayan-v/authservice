@@ -40,4 +40,12 @@ public class AuthController {
                 .refreshToken(refreshToken)
                 .build();
     }
+
+    @PostMapping("/logout")
+    public String logout(@RequestParam String refreshToken) {
+
+        tokenService.deleteRefreshToken(refreshToken);
+
+        return "Logged out successfully";
+    }
 }
