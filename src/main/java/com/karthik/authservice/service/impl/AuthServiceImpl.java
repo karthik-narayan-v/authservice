@@ -7,6 +7,7 @@ import com.karthik.authservice.entity.User;
 import com.karthik.authservice.repository.UserRepository;
 import com.karthik.authservice.security.jwt.JwtProvider;
 import com.karthik.authservice.service.AuthService;
+import com.karthik.authservice.service.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final TokenService tokenService;
 
     @Override
     public AuthResponse signup(SignupRequest request) {
@@ -35,10 +37,11 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
         String accessToken = jwtProvider.generateToken(user.getId());
+        String refreshToken = tokenService.createRefreshToken(user);
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken("dummy-refresh")
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -53,10 +56,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtProvider.generateToken(user.getId());
+        String refreshToken = tokenService.createRefreshToken(user);
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken("dummy-refresh")
+                .refreshToken(refreshToken)
                 .build();
     }
 }
