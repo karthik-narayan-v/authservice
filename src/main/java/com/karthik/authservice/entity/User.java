@@ -30,4 +30,10 @@ public class User {
     private boolean emailVerified;
 
     private LocalDateTime createdAt;
+
+    private String verificationToken;
+
+    private String resetToken;
+
+    private LocalDateTime resetTokenExpiry;
 }
