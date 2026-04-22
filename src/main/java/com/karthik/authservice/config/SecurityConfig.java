@@ -1,6 +1,7 @@
 package com.karthik.authservice.config;
 
 import com.karthik.authservice.security.jwt.JwtFilter;
+import com.karthik.authservice.security.ratelimit.RateLimitFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+    private final RateLimitFilter rateLimitFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -45,9 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // public APIs
                         .anyRequest().authenticated()           // protected APIs
                 )
-
-                // Add JWT filter before Spring Security filter
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, RateLimitFilter.class);
 
         return http.build();
     }
