@@ -4,6 +4,7 @@ import com.karthik.authservice.dto.request.LoginRequest;
 import com.karthik.authservice.dto.request.SignupRequest;
 import com.karthik.authservice.dto.response.AuthResponse;
 import com.karthik.authservice.entity.User;
+import com.karthik.authservice.oauth.GoogleOAuthService;
 import com.karthik.authservice.repository.UserRepository;
 import com.karthik.authservice.security.jwt.JwtProvider;
 import com.karthik.authservice.service.AuthService;
@@ -23,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
+    private final GoogleOAuthService googleOAuthService;
 
     @Override
     public AuthResponse signup(SignupRequest request) {
@@ -105,5 +107,34 @@ public class AuthServiceImpl implements AuthService {
         user.setResetTokenExpiry(null);
 
         userRepository.save(user);
+    }
+
+    @Override
+    public AuthResponse googleLogin(String idToken) {
+
+        var payload = googleOAuthService.verifyToken(idToken);
+
+        String email = payload.getEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .email(email)
+                            .provider("GOOGLE")
+                            .role("USER")
+                            .emailVerified(true)
+                            .createdAt(LocalDateTime.now())
+                            .build();
+
+                    return userRepository.save(newUser);
+                });
+
+        String accessToken = jwtProvider.generateToken(user.getId());
+        String refreshToken = tokenService.createRefreshToken(user);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }

@@ -79,4 +79,9 @@ public class AuthController {
         authService.resetPassword(token, newPassword);
         return "Password reset successful";
     }
+
+    @PostMapping("/google")
+    public AuthResponse googleLogin(@RequestParam String idToken) {
+        return authService.googleLogin(idToken);
+    }
 }

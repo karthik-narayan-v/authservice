@@ -9,4 +9,5 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
     void forgotPassword(String email);
     void resetPassword(String token, String newPassword);
+    AuthResponse googleLogin(String idToken);
 }
