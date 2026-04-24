@@ -4,6 +4,7 @@ import com.karthik.authservice.dto.request.LoginRequest;
 import com.karthik.authservice.dto.request.SignupRequest;
 import com.karthik.authservice.dto.response.AuthResponse;
 import com.karthik.authservice.entity.User;
+import com.karthik.authservice.exception.CustomException;
 import com.karthik.authservice.oauth.GoogleOAuthService;
 import com.karthik.authservice.repository.UserRepository;
 import com.karthik.authservice.security.jwt.JwtProvider;
@@ -57,14 +58,14 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException("User not found", 404));
 
         if (!user.isEmailVerified()) {
-            throw new RuntimeException("Email not verified");
+            throw new CustomException("Email not verified", 403);
         }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new CustomException("Invalid credentials", 401);
         }
 
         String accessToken = jwtProvider.generateToken(user.getId());
@@ -96,10 +97,10 @@ public class AuthServiceImpl implements AuthService {
     public void resetPassword(String token, String newPassword) {
 
         User user = userRepository.findByResetToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new CustomException("Invalid reset token", 400));
 
         if (user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Token expired");
+            throw new CustomException("Token expired", 401);
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));

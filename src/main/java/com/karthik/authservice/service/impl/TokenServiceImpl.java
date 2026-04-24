@@ -2,6 +2,7 @@ package com.karthik.authservice.service.impl;
 
 import com.karthik.authservice.entity.RefreshToken;
 import com.karthik.authservice.entity.User;
+import com.karthik.authservice.exception.CustomException;
 import com.karthik.authservice.repository.RefreshTokenRepository;
 import com.karthik.authservice.service.TokenService;
 import lombok.RequiredArgsConstructor;
@@ -34,10 +35,10 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public String validateRefreshToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+                .orElseThrow(() -> new CustomException("Invalid refresh token", 400));
 
         if (refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Refresh token expired");
+            throw new CustomException("Refresh token expired", 401);
         }
 
         return refreshToken.getUser().getId();

@@ -8,6 +8,7 @@ import com.karthik.authservice.repository.UserRepository;
 import com.karthik.authservice.security.jwt.JwtProvider;
 import com.karthik.authservice.service.AuthService;
 import com.karthik.authservice.service.TokenService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class AuthController {
     private final UserRepository userRepository;
 
     @PostMapping("/signup")
-    public AuthResponse signup(@RequestBody SignupRequest request) {
+    public AuthResponse signup(@Valid @RequestBody SignupRequest request) {
         return authService.signup(request);
     }
 

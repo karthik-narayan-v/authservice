@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.karthik.authservice.exception.CustomException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +33,9 @@ public class GoogleOAuthService {
             }
 
         } catch (Exception e) {
-            throw new RuntimeException("Invalid Google token");
+            throw new CustomException("Invalid Google token", 401);
         }
 
-        throw new RuntimeException("Google token verification failed");
+        throw new CustomException("Google token verification failed", 401);
     }
 }
