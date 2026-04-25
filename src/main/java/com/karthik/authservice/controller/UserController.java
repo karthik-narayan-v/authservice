@@ -12,7 +12,7 @@ public class UserController {
     @GetMapping("/me")
     public String getProfile(Authentication authentication) {
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        return "User Email: " + user.getEmail();
+        return "User Email: " + (user != null ? user.getEmail() : null);
     }
 
     @GetMapping("/admin")

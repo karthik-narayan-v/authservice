@@ -1,5 +1,7 @@
 package com.karthik.authservice.exception;
 
+import lombok.NonNull;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -9,9 +11,8 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Handle custom exceptions
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+    public ResponseEntity<@NonNull ErrorResponse> handleCustomException(CustomException ex) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(ex.getStatus())
@@ -23,13 +24,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<@NonNull ErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
 
         String message = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .findFirst()
-                .map(error -> error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .orElse("Validation error");
 
         ErrorResponse error = ErrorResponse.builder()
@@ -41,9 +42,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(error);
     }
 
-    // Handle all other exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception ex) {
+    public ResponseEntity<@NonNull ErrorResponse> handleException(Exception ex) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .status(500)
