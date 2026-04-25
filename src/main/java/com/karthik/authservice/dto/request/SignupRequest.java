@@ -1,9 +1,13 @@
 package com.karthik.authservice.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignupRequest {
 
     @Email(message = "Invalid email format")

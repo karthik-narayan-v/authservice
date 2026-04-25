@@ -1,6 +1,7 @@
 package com.karthik.authservice.security.user;
 
 import com.karthik.authservice.entity.User;
+import com.karthik.authservice.exception.CustomException;
 import com.karthik.authservice.repository.UserRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public UserDetails loadUserById(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new CustomException("User not found", 404));
 
         return new CustomUserDetails(user);
     }

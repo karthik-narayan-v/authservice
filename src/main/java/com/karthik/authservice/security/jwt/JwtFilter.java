@@ -1,6 +1,5 @@
 package com.karthik.authservice.security.jwt;
 
-import com.karthik.authservice.security.user.CustomUserDetails;
 import com.karthik.authservice.security.user.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -36,8 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (jwtProvider.validateToken(token)) {
                 String userId = jwtProvider.getUserIdFromToken(token);
 
-                CustomUserDetails userDetails =
-                        (CustomUserDetails) userDetailsService.loadUserById(userId);
+                UserDetails userDetails = userDetailsService.loadUserById(userId);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(

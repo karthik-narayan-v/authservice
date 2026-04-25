@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
 
         System.out.println("Verify email using: http://localhost:8081/auth/verify?token=" + verificationToken);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
         String accessToken = jwtProvider.generateToken(user.getId());
         String refreshToken = tokenService.createRefreshToken(user);
 
@@ -81,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
     public void forgotPassword(String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() ->  new CustomException("User not found", 404));
 
         String token = UUID.randomUUID().toString();
 

@@ -47,7 +47,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public void deleteRefreshToken(String token) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> new RuntimeException("Token not found"));
+                .orElseThrow(() -> new CustomException("Token not found", 404));
 
         refreshTokenRepository.delete(refreshToken);
     }

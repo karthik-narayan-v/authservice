@@ -4,6 +4,7 @@ import com.karthik.authservice.dto.request.LoginRequest;
 import com.karthik.authservice.dto.request.SignupRequest;
 import com.karthik.authservice.dto.response.AuthResponse;
 import com.karthik.authservice.entity.User;
+import com.karthik.authservice.exception.CustomException;
 import com.karthik.authservice.repository.UserRepository;
 import com.karthik.authservice.security.jwt.JwtProvider;
 import com.karthik.authservice.service.AuthService;
@@ -57,7 +58,7 @@ public class AuthController {
     public String verifyEmail(@RequestParam String token) {
 
         User user = userRepository.findByVerificationToken(token)
-                .orElseThrow(() -> new RuntimeException("Invalid token"));
+                .orElseThrow(() -> new CustomException("Invalid token", 400));
 
         user.setEmailVerified(true);
         user.setVerificationToken(null);
