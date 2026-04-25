@@ -1,11 +1,16 @@
 # ---------- Build Stage ----------
-FROM gradle:8.7-jdk17 AS builder
+FROM eclipse-temurin:17-jdk-jammy AS builder
 
 WORKDIR /app
 
+# Copy project
 COPY . .
 
-RUN gradle clean build -x test
+# Give permission to wrapper
+RUN chmod +x ./gradlew
+
+# Build using wrapper (IMPORTANT FIX)
+RUN ./gradlew clean build -x test
 
 # ---------- Run Stage ----------
 FROM eclipse-temurin:17-jdk-jammy

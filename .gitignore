@@ -1,7 +1,6 @@
 HELP.md
 .gradle
 build/
-!gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
@@ -40,7 +39,7 @@ out/
 # Spring Boot / Java
 # ===============================
 target/
-*.jar
+#*.jar
 *.war
 *.class
 
@@ -51,3 +50,5 @@ logs/
 *.log
 
 .metadata
+
+!gradle/wrapper/gradle-wrapper.jar
