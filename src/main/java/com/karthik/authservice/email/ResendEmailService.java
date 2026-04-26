@@ -49,6 +49,7 @@ public class ResendEmailService implements EmailService {
         try {
             restTemplate.postForEntity(url, request, String.class);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CustomException("Failed to send verification email", 500);
         }
     }
