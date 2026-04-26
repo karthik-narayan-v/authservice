@@ -2,6 +2,7 @@ package com.karthik.authservice.security.jwt;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.DefaultResourceLoader;
 
 import java.lang.reflect.Field;
 
@@ -13,10 +14,17 @@ class JwtProviderTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        jwtProvider = new JwtProvider();
 
-        // Set private fields using reflection
-        setField(jwtProvider, "jwtSecret", "my-secret-key-my-secret-key-my-secret-key");
+        jwtProvider = new JwtProvider(new DefaultResourceLoader());
+
+        // Inject test key paths
+        setField(jwtProvider, "privateKeyPath", "classpath:keys/private.pem");
+        setField(jwtProvider, "publicKeyPath", "classpath:keys/public.pem");
+
+        // No env keys
+        setField(jwtProvider, "privateKeyStr", "");
+        setField(jwtProvider, "publicKeyStr", "");
+
         setField(jwtProvider, "jwtExpiration", 3600000L); // 1 hour
     }
 
@@ -66,9 +74,14 @@ class JwtProviderTests {
     @Test
     void validateToken_shouldReturnFalse_forExpiredToken() throws Exception {
 
-        JwtProvider provider = new JwtProvider();
+        JwtProvider provider = new JwtProvider(new DefaultResourceLoader());
 
-        setField(provider, "jwtSecret", "my-secret-key-my-secret-key-my-secret-key");
+        setField(provider, "privateKeyPath", "classpath:keys/private.pem");
+        setField(provider, "publicKeyPath", "classpath:keys/public.pem");
+
+        setField(provider, "privateKeyStr", "");
+        setField(provider, "publicKeyStr", "");
+
         setField(provider, "jwtExpiration", 1L); // 1 ms
 
         String token = provider.generateToken("user-id");

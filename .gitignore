@@ -52,3 +52,5 @@ logs/
 .metadata
 
 !gradle/wrapper/gradle-wrapper.jar
+
+*.pem
