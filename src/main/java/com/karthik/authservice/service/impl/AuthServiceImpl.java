@@ -3,6 +3,7 @@ package com.karthik.authservice.service.impl;
 import com.karthik.authservice.dto.request.LoginRequest;
 import com.karthik.authservice.dto.request.SignupRequest;
 import com.karthik.authservice.dto.response.AuthResponse;
+import com.karthik.authservice.email.EmailService;
 import com.karthik.authservice.entity.User;
 import com.karthik.authservice.exception.CustomException;
 import com.karthik.authservice.oauth.GoogleOAuthService;
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final TokenService tokenService;
     private final GoogleOAuthService googleOAuthService;
+    private final EmailService emailService;
 
     @Override
     public AuthResponse signup(SignupRequest request) {
@@ -41,6 +43,8 @@ public class AuthServiceImpl implements AuthService {
                 .verificationToken(verificationToken)
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
 
         System.out.println("Verify email using: http://localhost:8081/auth/verify?token=" + verificationToken);
 
