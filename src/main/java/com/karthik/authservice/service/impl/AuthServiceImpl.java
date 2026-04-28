@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse signup(SignupRequest request) {
 
-        String verificationToken = UUID.randomUUID().toString();
+//        String verificationToken = UUID.randomUUID().toString();
 
         User user = User.builder()
                 .email(request.getEmail())
@@ -40,13 +40,13 @@ public class AuthServiceImpl implements AuthService {
                 .provider("LOCAL")
                 .role("USER")
                 .emailVerified(false)
-                .verificationToken(verificationToken)
+//                .verificationToken(verificationToken)
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
+//        emailService.sendVerificationEmail(user.getEmail(), verificationToken);
 
-        System.out.println("Verify email using: http://localhost:8081/auth/verify?token=" + verificationToken);
+//        System.out.println("Verify email using: http://localhost:8081/auth/verify?token=" + verificationToken);
 
         user = userRepository.save(user);
         String accessToken = jwtProvider.generateToken(user.getId());
@@ -64,9 +64,9 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new CustomException("User not found", 404));
 
-        if (!user.isEmailVerified()) {
-            throw new CustomException("Email not verified", 403);
-        }
+//        if (!user.isEmailVerified()) {
+//            throw new CustomException("Email not verified", 403);
+//        }
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new CustomException("Invalid credentials", 401);
